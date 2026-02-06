@@ -1,0 +1,26 @@
+#!/bin/bash
+#Unmount first to clear the current home-based mount
+fusermount -u ~/laptop
+
+# Mount to the absolute root
+rclone mount :ftp:/ ~/laptop \
+  --ftp-host 192.168.1.72 \
+  --ftp-user funk \
+  --ftp-pass AizHmbRgrS8XgRAXKK7RwAt5p3cC5CBS \
+  --vfs-cache-mode writes \
+  --allow-other \
+  --daemon
+
+
+sudo umount -l ~/pc
+
+rclone mount :ftp: ~/pc \
+  --ftp-host 192.168.1.3 \
+  --ftp-user anonymous \
+  --ftp-pass t07S_13Sgq0v8YvMToQkOg \
+  --vfs-cache-mode writes \
+  --allow-non-empty \
+  --daemon
+
+sudo umount -l ~/Router
+sudo -S mount -t cifs //192.168.1.1/SAMSUNG /home/funk/Router/ -o 	vers=2.0,username=funkbadger,password=BoogieWoogie@69

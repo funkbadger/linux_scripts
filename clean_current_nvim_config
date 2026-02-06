@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Define the directories to be wiped
+paths=(
+    "$HOME/.config/nvim"
+    "$HOME/.local/share/nvim"
+    "$HOME/.local/state/nvim"
+    "$HOME/.cache/nvim"
+)
+
+echo "!!! WARNING: This will DESTRUCTIVELY REMOVE all current Neovim configurations and data !!!"
+read -p "Are you sure you want to proceed? (y/n): " confirm
+
+if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+    for dir in "${paths[@]}"; do
+        if [ -d "$dir" ]; then
+            echo "Removing $dir..."
+            # Using sudo here to ensure we bypass any 'Permission Denied' issues
+            sudo rm -rf "$dir"
+        else
+            echo "Skipping $dir: Already empty."
+        fi
+    done
+    echo "--------------------------------------------"
+    echo "Cleanup complete. Your system is ready for a fresh Neovim install."
+else
+    echo "Cleanup cancelled."
+fi

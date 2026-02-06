@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Script Name: replace_text.sh
+# Description: Searches a text file for a regular expression and replaces it
+#              with a specified phrase, editing the file in place.
+# Usage: ./replace_text.sh <regex_to_find> <replacement_string> <input_file>
+
+# -----------------------------------------------------------
+# 1. Argument Validation
+# -----------------------------------------------------------
+
+if [ "$#" -ne 3 ]; then
+  echo "Error: Missing arguments."
+  echo "Usage: $0 <regex_to_find> <replacement_string> <input_file>"
+  echo ""
+  echo "Example:"
+  echo "  ./replace_text.sh 'old_value' 'new_value' data.txt"
+  echo "  ./replace_text.sh '[0-9]+' 'NUMBER' report.log"
+  exit 1
+fi
+
+# -----------------------------------------------------------
+# 2. Variable Assignment
+# -----------------------------------------------------------
+SEARCH_PATTERN="$1"
+REPLACEMENT_PHRASE="$2"
+INPUT_FILE="$3"
+
+# -----------------------------------------------------------
+# 3. Execution (Sed Command)
+# -----------------------------------------------------------
+
+echo "--- Starting Replacement ---"
+echo "File: $INPUT_FILE"
+echo "Search Regex: $SEARCH_PATTERN"
+echo "Replacement: $REPLACEMENT_PHRASE"
+
+# sed command explained:
+# -i: edit file in place (modifies the original file)
+# s#...#...#g: substitution command. We use '#' as the delimiter instead of '/'
+#              to prevent issues if the regex or phrase contains slashes.
+# $SEARCH_PATTERN: The regular expression provided as argument 1.
+# $REPLACEMENT_PHRASE: The literal string provided as argument 2.
+# g: Global flag, replaces all occurrences on a line, not just the first.
+
+sed -i "s#$SEARCH_PATTERN#$REPLACEMENT_PHRASE#g" "$INPUT_FILE"
+
+# -----------------------------------------------------------
+# 4. Completion Check
+# -----------------------------------------------------------
+
+if [ $? -eq 0 ]; then
+  echo "--- Success: Replacement complete. The file '$INPUT_FILE' has been updated. ---"
+else
+  echo "--- Error: Sed command failed. Check file permissions or regex syntax. ---"
+fi
+

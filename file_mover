@@ -1,0 +1,79 @@
+#!/bin/bash
+# file_mover.sh - Searches for files matching a pattern and moves them to a specified directory.
+#
+# Usage: ./file_mover.sh <file_pattern> [destination_directory]
+# Example: ./file_mover.sh "*.log" /tmp/archives
+# Example: ./file_mover.sh "report_*.txt"  # Moves to the current directory
+
+# --- 1. Argument Validation and Setup ---
+
+# Check if the file pattern (first argument) is provided
+if [ -z "$1" ]; then
+    echo "Error: Missing file pattern."
+    echo "Usage: $0 <file_pattern> [destination_directory]"
+    echo "The file pattern should be enclosed in quotes (e.g., \"*.txt\")."
+    exit 1
+fi
+
+PATTERN="$1"
+
+# Determine the destination directory (second argument or current directory)
+if [ -z "$2" ]; then
+    DEST_DIR="."
+    echo "No destination directory specified. Using the current directory (.)."
+else
+    DEST_DIR="$2"
+    echo "Destination directory set to: $DEST_DIR"
+fi
+
+# --- 2. Destination Directory Check ---
+
+# Check if the destination directory exists and is actually a directory
+if [ ! -d "$DEST_DIR" ]; then
+    echo "Error: Destination directory '$DEST_DIR' does not exist or is not accessible."
+    exit 1
+fi
+
+# Convert DEST_DIR to an absolute path for safety, especially if using a relative path like '..'
+DEST_DIR_ABS=$(realpath "$DEST_DIR")
+
+echo "--- Starting Search and Move Operation ---"
+
+# --- 3. Find and Move Files ---
+
+# find command explanation:
+# .          : Start search from the current directory and **recursively searches all subfolders** by default.
+# -name "$PATTERN" : Match files based on the glob pattern provided by the user.
+# -type f    : Ensure only regular files are matched, ignoring directories.
+# -print0    : Prints the full filename followed by a null character (the safest way).
+
+# xargs command explanation:
+# -0         : Reads null-terminated input (from find -print0).
+# mv -t "$DEST_DIR_ABS" : Use the target directory option (-t) to safely handle multiple files.
+
+# Check how many files match the pattern before moving
+# We use a non-print0 find here just for counting, which is faster for wc -l
+count=$(find . -name "$PATTERN" -type f -print | wc -l)
+
+if [ "$count" -eq 0 ]; then
+    echo "No files matching '$PATTERN' found."
+    exit 0
+fi
+
+echo "Found $count file(s) matching '$PATTERN'."
+echo "Moving files..."
+
+# Execute the move operation
+# This is the recursive part: find . searches subdirectories automatically.
+find . -name "$PATTERN" -type f -print0 | xargs -0 mv -t "$DEST_DIR_ABS"
+
+# --- 4. Completion Message ---
+
+if [ $? -eq 0 ]; then
+    echo "--- Operation Successful ---"
+    echo "$count file(s) have been successfully moved to '$DEST_DIR_ABS'."
+else
+    echo "--- Operation Completed with Potential Errors ---"
+    echo "Some files might not have been moved. Please check the permissions and error output above."
+fi
+

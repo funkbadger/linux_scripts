@@ -1,0 +1,35 @@
+#!/bin/bash
+# search_file.sh
+# This script searches the entire filesystem, starting from the root (/),
+# for a file whose name matches the first command-line argument.
+# Usage: ./search_file.sh <filename_to_find>
+
+# --- Argument Validation ---
+if [ -z "$1" ]; then
+    echo "Error: Please provide a filename to search for."
+    echo "Usage: ./search_file.sh <filename_to_find>"
+    exit 1
+fi
+
+# Store the search term, adding quotes to handle potential special characters
+# or spaces in the filename, though 'find' handles $1 quoted internally too.
+FILENAME="$1"
+
+echo "Searching the entire system for files named '$FILENAME'..."
+echo "Note: Output may take some time. Permission errors are suppressed."
+echo "--------------------------------------------------------"
+
+# --- Main Search Logic ---
+# 1. 'find /': Starts the search from the root directory.
+# 2. '-type f': Ensures only files (not directories or links) are matched.
+# 3. '-name "$FILENAME"': Matches the name exactly.
+# 4. '2>/dev/null': Redirects standard error (2) to /dev/null,
+#    which suppresses the "Permission denied" messages you often get
+#    when traversing protected system directories as a non-root user.
+find / -type f -name "$FILENAME" 2>/dev/null
+
+echo "--------------------------------------------------------"
+echo "Search complete."
+
+exit 0
+

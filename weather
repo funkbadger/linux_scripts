@@ -1,0 +1,3 @@
+weather_now 54.25 -0.7667
+echo -n "Press Enter to continue..."
+read junk

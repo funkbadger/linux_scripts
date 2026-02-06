@@ -1,0 +1,3 @@
+curl wttr.in/Pickering,UK?m | lolcat
+echo -n "Press Enter to continue..."
+read junk

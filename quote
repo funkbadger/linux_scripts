@@ -1,0 +1,1 @@
+/usr/games/fortune -o | /usr/games/cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n 1) | lolcat

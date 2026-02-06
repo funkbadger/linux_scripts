@@ -1,0 +1,36 @@
+#!/bin/bash
+# search_file.sh
+# This script searches the entire filesystem, starting from the root (/),
+# for files whose FULL PATH matches a regular expression supplied in the first command-line argument.
+# Usage: ./search_file.sh <regex_pattern>
+
+# --- Argument Validation ---
+if [ -z "$1" ]; then
+    echo "Error: Please provide a regular expression pattern to search for."
+    echo "Usage: ./search_file.sh <regex_pattern>"
+    echo "Example (finding files ending in .conf): ./search_file.sh '.*\.conf$'"
+    exit 1
+fi
+
+# Store the search term
+REGEX_PATTERN="$1"
+
+echo "Searching the entire system for paths matching the regex: '$REGEX_PATTERN'..."
+echo "Note: Output may take some time. Permission errors are suppressed."
+echo "--------------------------------------------------------"
+
+# --- Main Search Logic ---
+# 1. 'find /': Starts the search from the root directory.
+# 2. '-regextype posix-extended': Specifies using Extended Regular Expressions (ERE) for better features.
+# 3. '-type f': Ensures only files (not directories or links) are matched.
+# 4. '-regex "$REGEX_PATTERN"': Matches the entire file path against the pattern.
+#    Since 'find -regex' matches the full path, the user must often use '.*' at the start
+#    and end, or '.*' at the start for filename matching (e.g. '.*filename.txt').
+# 5. '2>/dev/null': Redirects standard error (2) to /dev/null to suppress permission errors.
+find / -regextype posix-extended -type f -regex "$REGEX_PATTERN" 2>/dev/null
+
+echo "--------------------------------------------------------"
+echo "Search complete."
+
+exit 0
+

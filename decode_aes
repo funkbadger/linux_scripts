@@ -1,0 +1,1 @@
+openssl enc -aes-256-cbc -d -pbkdf2 -iter 100000 -salt -in $1 -out $1.decoded

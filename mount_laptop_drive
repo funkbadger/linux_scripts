@@ -1,0 +1,11 @@
+# Unmount first to clear the current home-based mount
+fusermount -u ~/laptop
+
+# Mount to the absolute root
+rclone mount :ftp:/ ~/laptop \
+  --ftp-host 192.168.1.72 \
+  --ftp-user funk \
+  --ftp-pass AizHmbRgrS8XgRAXKK7RwAt5p3cC5CBS \
+  --vfs-cache-mode writes \
+  --allow-other \
+  --daemon

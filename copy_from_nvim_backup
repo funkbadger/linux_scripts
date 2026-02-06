@@ -1,0 +1,41 @@
+#!/bin/bash
+
+SUFFIX=$1
+
+if [ -z "$SUFFIX" ]; then
+    echo "Usage: ./copy_from_nvim_backup <suffix>"
+    echo "Example: ./copy_from_nvim_backup astro"
+    exit 1
+fi
+
+# Define the folder sets
+paths=(
+    ".config/nvim"
+    ".local/share/nvim"
+    ".local/state/nvim"
+    ".cache/nvim"
+)
+
+echo "Restoring Neovim configuration from: .$SUFFIX"
+echo "--------------------------------------------"
+
+for rel_path in "${paths[@]}"; do
+    SRC="$HOME/$rel_path.$SUFFIX"
+    DEST="$HOME/$rel_path"
+
+    if [ -d "$SRC" ]; then
+        # If the active directory already exists, clear it out first
+        if [ -d "$DEST" ]; then
+            echo "Removing existing active directory: $DEST"
+            rm -rf "$DEST"
+        fi
+
+        echo "Copying $SRC ---> $DEST"
+        cp -rp "$SRC" "$DEST"
+    else
+        echo "Skipping $rel_path: Backup (.$SUFFIX) not found."
+    fi
+done
+
+echo "--------------------------------------------"
+echo "Done! You can now launch Neovim with your $SUFFIX config."

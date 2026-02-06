@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ $# -gt 0 ]; then
+  if [ "$1" == "d" ]; then
+	  nordvpn d
+  elif [ "$1" == "s" ]; then
+	  nordvpn status
+  else
+  	nordvpn c "$1"
+	nordvpn status
+  fi
+else
+  # nordvpn c United_States
+  nordvpn c miami
+  nordvpn status
+fi

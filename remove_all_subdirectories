@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# ==============================================================================
+# WARNING: This script permanently deletes directories and their contents.
+# Use with extreme caution. Always test in a safe environment first.
+# ==============================================================================
+
+# Ensure we are in a directory where we can operate
+if [ "$#" -gt 0 ]; then
+    echo "Usage: ./remove_subdirs.sh"
+    echo "Run this script from the directory containing the subdirectories you want to delete."
+    exit 1
+fi
+
+echo "Scanning for and removing all subdirectories (and their contents) in the current directory..."
+
+# The core command:
+# 1. 'rm': The remove command.
+# 2. '-r': Recursive, allows deletion of directories and their contents.
+# 3. '-f': Force, ignores non-existent files and arguments, and never prompts.
+# 4. '*/': The glob pattern that matches all directory names (but not files)
+#    in the current working directory. It expands to a list of subdirectories.
+#    Note: This typically does NOT match hidden directories (those starting with '.').
+rm -rf */
+
+# Check the exit status of the rm command
+if [ $? -eq 0 ]; then
+    echo "Operation complete. All visible subdirectories have been removed."
+else
+    echo "An error occurred during the removal process."
+fi
+

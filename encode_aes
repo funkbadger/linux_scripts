@@ -1,0 +1,2 @@
+# If you can access the original file again
+openssl enc -aes-256-cbc -pbkdf2 -iter 100000 -salt -in $1 -out $1.encoded

@@ -1,0 +1,21 @@
+#!/bin/bash
+# Script to select a random cow name from the 'cowsay -l' output.
+
+# 1. Get the list of all available cow personalities from 'cowsay -l'.
+# 2. Use 'tail -n +2' to skip the first header line.
+# 3. Use 'tr' to replace all spaces with newlines, putting each cow name on its own line.
+# 4. Use 'shuf -n 1' (shuffle and output the first line) to select a single random name.
+RANDOM_COW=$(cowsay -l | tail -n +2 | tr ' ' '\n' | shuf -n 1)
+
+if [ -z "$RANDOM_COW" ]; then
+  echo "Error: Could not retrieve or select a random cow name."
+else
+  fortune | cowsay -f "$RANDOM_COW" | lolcat
+fi
+
+# Optional: Add error handling for cowsay not being installed
+if ! command -v cowsay &>/dev/null; then
+  echo ""
+  echo "Warning: 'cowsay' command not found. Cannot display the final result."
+  echo "If you want to run the full script, install cowsay (e.g., 'sudo apt install cowsay' or 'sudo yum install cowsay')."
+fi
