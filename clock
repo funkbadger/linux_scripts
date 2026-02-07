@@ -1,1 +1,3 @@
+# displays a terminal digital clock
+# add another line of comment
 tty-clock -c -b -t -D -s
