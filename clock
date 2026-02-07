@@ -1,1 +1,2 @@
+# displays a terminal digital clock
 tty-clock -c -b -t -D -s
